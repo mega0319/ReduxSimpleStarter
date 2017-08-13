@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Sparklines, SparklinesLine } from 'react-sparklines'
+import { Sparklines, SparklinesLine, SparklinesReferenceLine } from 'react-sparklines'
+import Chart from '../components/chart'
+import GoogleMap from '../components/google_map'
 
 class WeatherList extends Component {
 
@@ -9,7 +11,7 @@ class WeatherList extends Component {
     const temps = []
     const pressures = []
     const humidities = []
-
+    let { lon, lat } = cityData.city.coord
     cityData.list.map( weather =>  {
       temps.push(weather.main.temp)
       pressures.push(weather.main.pressure)
@@ -18,21 +20,15 @@ class WeatherList extends Component {
 
     return (
       <tr key={name}>
-        <td> {name} </td>
+        <td> <GoogleMap lon={lon} lat={lat}/> </td>
         <td>
-          <Sparklines height={120} width={180} data={temps} >
-            <SparklinesLine color='red' />
-          </Sparklines>
+          <Chart data={temps} color="red" units="K"/>
         </td>
         <td>
-          <Sparklines height={120} width={180} data={pressures} >
-            <SparklinesLine color='blue' />
-          </Sparklines>
+          <Chart data={pressures} color="blue" units="hPa"/>
         </td>
         <td>
-          <Sparklines height={120} width={180} data={humidities} >
-            <SparklinesLine color='yellow' />
-          </Sparklines>
+          <Chart data={humidities} color="green" units="%"/>
         </td>
       </tr>
     )
@@ -44,13 +40,13 @@ class WeatherList extends Component {
         <thead>
           <tr>
             <th>City</th>
-            <th>Temperature</th>
-            <th>Pressure</th>
-            <th>Humidity</th>
+            <th>Temperature (K)</th>
+            <th>Pressure (hPa)</th>
+            <th>Humidity (%)</th>
           </tr>
         </thead>
         <tbody>
-            {this.props.weather.map(this.renderWeather)}
+          {this.props.weather.map(this.renderWeather)}
         </tbody>
       </table>
     )
